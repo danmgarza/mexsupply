@@ -88,6 +88,18 @@ Analyze the current local database quality metrics:
 npm run analyze:db
 ```
 
+Analyze repeated identity/contact patterns without merging records:
+
+```bash
+npm run analyze:duplicates
+```
+
+Plan the first public-web enrichment queue from qualified candidates:
+
+```bash
+npm run plan:enrichment
+```
+
 Manufacturing candidates are initially identified by DENUE economic sector codes `31`, `32`, and `33`, plus class codes beginning with those prefixes.
 Live DENUE ingestion requires `DENUE_API_TOKEN`. Request URLs stored in raw records redact the token.
 

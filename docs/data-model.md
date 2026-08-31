@@ -48,3 +48,5 @@ These are procurement-oriented concepts, not direct mirrors of government classi
 ## Deduplication
 
 `duplicate_candidates` stores possible duplicates with score, signals, and status. Automated merging is intentionally not implemented in Milestone 2.
+
+Phase 3 duplicate review treats repeated DENUE establishment names as evidence patterns, not merge instructions. Branch or network patterns should preserve separate establishments. Generic or unqualified clusters should be down-ranked for enrichment. Only strong same-location/contact clusters should advance to manual duplicate review.

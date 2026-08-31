@@ -6,7 +6,8 @@ import { usePathname } from "next/navigation";
 const navItems = [
   { href: "/", label: "Search", match: (pathname: string) => pathname === "/" || pathname.startsWith("/companies") },
   { href: "/admin", label: "Overview", match: (pathname: string) => pathname === "/admin" },
-  { href: "/admin/data", label: "Data", match: (pathname: string) => pathname.startsWith("/admin/data") }
+  { href: "/admin/data", label: "Data", match: (pathname: string) => pathname.startsWith("/admin/data") },
+  { href: "/admin/duplicates", label: "Duplicates", match: (pathname: string) => pathname.startsWith("/admin/duplicates") }
 ] as const;
 
 export function AppNavigation() {

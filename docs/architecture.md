@@ -24,6 +24,9 @@ The V1 data flow is:
 
 - `jobs/ingest-denue.ts`: repeatable DENUE ingestion job.
 - `scripts/analyze-denue-fixture.ts`: fixture-level data-quality reconnaissance without database writes.
+- `scripts/analyze-database-quality.ts`: database-backed quality report over loaded canonical/source rows.
+- `scripts/analyze-duplicate-clusters.ts`: duplicate-pattern review without merging records.
+- `scripts/plan-enrichment-candidates.ts`: Phase 4 candidate queue planner for public-web enrichment.
 - `scripts/run-migrations.ts`: direct Postgres migration fallback when Supabase CLI is not available.
 
 Each ingestion creates an `ingestion_runs` row and records discovered, inserted, updated, skipped, and failed counts.

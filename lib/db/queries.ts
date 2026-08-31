@@ -1,4 +1,6 @@
 import { query } from "@/lib/db/pool";
+import { assessDuplicateClusters, type DuplicateClusterRow } from "@/lib/analysis/duplicate-clusters";
+import { qualifiedSupplierSql } from "@/lib/analysis/qualification";
 
 export type CompanySearchRow = {
   id: string;
@@ -80,8 +82,7 @@ export async function searchCompanies({
     }
 
     if (qualifiedOnly) {
-      clauses.push(`employee_size_band is distinct from '0 a 5 personas'`);
-      clauses.push(`(nullif(website, '') is not null or nullif(normalized_phone, '') is not null or nullif(email, '') is not null)`);
+      clauses.push(qualifiedSupplierSql(""));
     }
 
     params.push(limit);
@@ -154,8 +155,7 @@ export async function getAdminMetrics() {
          select 'Manufacturing candidates', count(*)::text from companies where is_manufacturing_candidate
          union all
          select 'Qualified candidates', count(*)::text from companies
-          where employee_size_band is distinct from '0 a 5 personas'
-            and (nullif(website, '') is not null or nullif(normalized_phone, '') is not null or nullif(email, '') is not null)
+          where ${qualifiedSupplierSql("")}
          union all
          select 'With websites', count(*)::text from companies where nullif(website, '') is not null
          union all
@@ -228,8 +228,7 @@ export async function getDataQualityReport() {
          union all select 'Canonical companies', count(*)::text from companies
          union all select 'Manufacturing candidates', count(*)::text from companies where is_manufacturing_candidate
          union all select 'Qualified candidates', count(*)::text from companies
-          where employee_size_band is distinct from '0 a 5 personas'
-            and (nullif(website, '') is not null or nullif(normalized_phone, '') is not null or nullif(email, '') is not null)
+          where ${qualifiedSupplierSql("")}
          union all select 'With websites', count(*)::text from companies where nullif(website, '') is not null
          union all select 'With email', count(*)::text from companies where nullif(email, '') is not null
          union all select 'With phone', count(*)::text from companies where nullif(normalized_phone, '') is not null
@@ -316,5 +315,78 @@ export async function getDataQualityReport() {
       completeness: [],
       duplicates: []
     };
+  }
+}
+
+async function loadDuplicateClusters(pattern: DuplicateClusterRow["pattern"], column: string) {
+  const qualifiedSql = qualifiedSupplierSql("");
+  const contactSql = "(nullif(website, '') is not null or nullif(normalized_phone, '') is not null or nullif(email, '') is not null)";
+  const result = await query<{
+    pattern: DuplicateClusterRow["pattern"];
+    value: string;
+    count: string;
+    states: string[];
+    cities: string[];
+    postal_codes: string[];
+    industry_codes: string[];
+    website_domains: string[];
+    employee_size_bands: string[];
+    contactable_count: string;
+    qualified_count: string;
+  }>(
+    `select $1::text as pattern,
+            ${column} as value,
+            count(*)::text as count,
+            array_remove(array_agg(distinct state order by state), null) as states,
+            array_remove(array_agg(distinct city order by city), null) as cities,
+            array_remove(array_agg(distinct postal_code order by postal_code), null) as postal_codes,
+            array_remove(array_agg(distinct industry_code order by industry_code), null) as industry_codes,
+            array_remove(array_agg(distinct website_domain order by website_domain), null) as website_domains,
+            array_remove(array_agg(distinct employee_size_band order by employee_size_band), null) as employee_size_bands,
+            count(*) filter (where ${contactSql})::text as contactable_count,
+            count(*) filter (where ${qualifiedSql})::text as qualified_count
+     from companies
+     where ${column} is not null
+     group by ${column}
+     having count(*) > 1
+     order by count(*) desc, ${column}
+     limit 25`,
+    [pattern]
+  );
+
+  return result.rows.map<DuplicateClusterRow>((row) => ({
+    pattern,
+    value: row.value,
+    count: Number(row.count),
+    states: row.states,
+    cities: row.cities,
+    postalCodes: row.postal_codes,
+    industryCodes: row.industry_codes,
+    websiteDomains: row.website_domains,
+    employeeSizeBands: row.employee_size_bands,
+    contactableCount: Number(row.contactable_count),
+    qualifiedCount: Number(row.qualified_count)
+  }));
+}
+
+export async function getDuplicateClusterReport() {
+  try {
+    const clusters = [
+      ...(await loadDuplicateClusters("normalized_name", "normalized_name")),
+      ...(await loadDuplicateClusters("website_domain", "website_domain")),
+      ...(await loadDuplicateClusters("normalized_phone", "normalized_phone"))
+    ]
+      .sort((left, right) => right.count - left.count || left.pattern.localeCompare(right.pattern) || left.value.localeCompare(right.value))
+      .slice(0, 40);
+
+    const assessed = assessDuplicateClusters(clusters);
+    const summary = assessed.reduce<Record<string, number>>((counts, cluster) => {
+      counts[cluster.category] = (counts[cluster.category] ?? 0) + 1;
+      return counts;
+    }, {});
+
+    return { summary, clusters: assessed };
+  } catch {
+    return { summary: {}, clusters: [] };
   }
 }

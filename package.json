@@ -15,6 +15,8 @@
     "ingest:denue": "tsx jobs/ingest-denue.ts",
     "analyze:denue": "tsx scripts/analyze-denue-fixture.ts",
     "analyze:db": "tsx scripts/analyze-database-quality.ts",
+    "analyze:duplicates": "tsx scripts/analyze-duplicate-clusters.ts",
+    "plan:enrichment": "tsx scripts/plan-enrichment-candidates.ts",
     "supabase": "supabase"
   },
   "dependencies": {

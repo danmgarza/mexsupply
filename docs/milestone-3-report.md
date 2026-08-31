@@ -106,7 +106,9 @@ Do not move to web enrichment yet.
 
 Next work should finish Phase 3 operational hardening:
 
-- Manually inspect duplicate clusters before implementing any merge behavior.
-- Decide whether the reconnaissance sample should exclude micro-establishments for target-supplier discovery or keep them for source completeness.
+- Use `npm.cmd run analyze:duplicates` and `/admin/duplicates` for duplicate-cluster review.
+- Treat Bimbo, Barcel, AAM, Alen, and similar repeated brands as branch/network patterns unless stronger same-location duplicate evidence appears.
+- Down-rank generic or unqualified clusters such as Abarrotes, Acerradero, Alfareria, and Acua Pura for enrichment.
+- Keep micro-establishments and no-contact rows in source/canonical data, but exclude them from default supplier search and Phase 4 enrichment.
 - Use `npm.cmd run analyze:db` to regenerate database-quality metrics after future ingestion runs.
-- Make the first git commit before moving to additional enrichment or source integration work.
+- Commit duplicate-review and Phase 4 planning updates before moving into live website enrichment.
