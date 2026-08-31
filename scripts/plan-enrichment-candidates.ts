@@ -1,16 +1,21 @@
-import { hasProcurementRelevantClass, rankEnrichmentCandidates, type EnrichmentCandidateInput } from "@/lib/analysis/enrichment-priority";
+import { rankWebsiteEnrichmentCandidates, type EnrichmentCandidateInput } from "@/lib/analysis/enrichment-priority";
 import { qualifiedSupplierSql } from "@/lib/analysis/qualification";
 import { query } from "@/lib/db/pool";
+
+const qualifiedSql = qualifiedSupplierSql("");
+
+const totalQualified = await query<{ count: string }>(`select count(*)::text as count from companies where ${qualifiedSql}`);
 
 const result = await query<EnrichmentCandidateInput>(
   `select id, trade_name, legal_name, normalized_name, employee_size_band, industry_code,
           industry_label, website, phone, normalized_phone, email, city, state
    from companies
-   where ${qualifiedSupplierSql("")}
+   where ${qualifiedSql}
+     and nullif(website, '') is not null
    order by trade_name nulls last, legal_name nulls last`
 );
 
-const ranked = rankEnrichmentCandidates(result.rows).filter((candidate) => hasProcurementRelevantClass(candidate.industry_code));
+const ranked = rankWebsiteEnrichmentCandidates(result.rows);
 
 const candidates = ranked.slice(0, 50).map((candidate) => ({
   name: candidate.trade_name || candidate.legal_name,
@@ -25,4 +30,16 @@ const candidates = ranked.slice(0, 50).map((candidate) => ({
   reasons: candidate.reasons
 }));
 
-console.log(JSON.stringify({ totalQualified: result.rowCount, enrichmentPool: ranked.length, returned: candidates.length, candidates }, null, 2));
+console.log(
+  JSON.stringify(
+    {
+      totalQualified: Number(totalQualified.rows[0]?.count ?? 0),
+      websiteQualified: result.rowCount,
+      websiteEnrichmentPool: ranked.length,
+      returned: candidates.length,
+      candidates
+    },
+    null,
+    2
+  )
+);

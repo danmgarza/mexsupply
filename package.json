@@ -16,6 +16,7 @@
     "analyze:denue": "tsx scripts/analyze-denue-fixture.ts",
     "analyze:db": "tsx scripts/analyze-database-quality.ts",
     "analyze:duplicates": "tsx scripts/analyze-duplicate-clusters.ts",
+    "plan:website-enrichment": "tsx scripts/plan-enrichment-candidates.ts",
     "plan:enrichment": "tsx scripts/plan-enrichment-candidates.ts",
     "supabase": "supabase"
   },

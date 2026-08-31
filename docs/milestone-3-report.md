@@ -100,15 +100,13 @@ Supported filters now include keyword, state, city, DENUE class code prefix, web
 - Supabase CLI applied the migrations during `npx.cmd supabase start`; the custom `npm.cmd run db:migrate` path should not be run afterward against the same fresh database because the initial migration is not idempotent.
 - One live DENUE `Ubicacion` value contained a comma inside parentheses, which broke naive comma-splitting. The parser now splits only on commas outside parentheses.
 
-## Recommended Next Milestone
+## Phase 3 Checkpoint
 
-Do not move to web enrichment yet.
-
-Next work should finish Phase 3 operational hardening:
+Phase 3 operational hardening now has a committed duplicate-review checkpoint. The next milestone can move into a small Phase 4 website-enrichment pilot:
 
 - Use `npm.cmd run analyze:duplicates` and `/admin/duplicates` for duplicate-cluster review.
 - Treat Bimbo, Barcel, AAM, Alen, and similar repeated brands as branch/network patterns unless stronger same-location duplicate evidence appears.
 - Down-rank generic or unqualified clusters such as Abarrotes, Acerradero, Alfareria, and Acua Pura for enrichment.
-- Keep micro-establishments and no-contact rows in source/canonical data, but exclude them from default supplier search and Phase 4 enrichment.
+- Keep micro-establishments and no-contact rows in source/canonical data, but exclude them from default supplier search and Phase 4 website enrichment.
+- Require websites for the first Phase 4 enrichment lane. Phone/email-only qualified rows should wait for a later contact-research lane.
 - Use `npm.cmd run analyze:db` to regenerate database-quality metrics after future ingestion runs.
-- Commit duplicate-review and Phase 4 planning updates before moving into live website enrichment.

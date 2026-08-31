@@ -41,6 +41,10 @@ export function hasProcurementRelevantClass(industryCode: string | null) {
   return procurementRelevantPrefixes.some((prefix) => industryCode?.startsWith(prefix));
 }
 
+export function isWebsiteEnrichmentCandidate(candidate: EnrichmentCandidateInput) {
+  return isQualifiedSupplierCandidate(candidate) && Boolean(candidate.website) && hasProcurementRelevantClass(candidate.industry_code);
+}
+
 export function scoreEnrichmentCandidate(candidate: EnrichmentCandidateInput): EnrichmentCandidate {
   const reasons: string[] = [];
   let score = 0;
@@ -88,4 +92,8 @@ export function rankEnrichmentCandidates(candidates: EnrichmentCandidateInput[])
     .map(scoreEnrichmentCandidate)
     .filter((candidate) => candidate.score > 0)
     .sort((left, right) => right.score - left.score || (left.trade_name ?? "").localeCompare(right.trade_name ?? ""));
+}
+
+export function rankWebsiteEnrichmentCandidates(candidates: EnrichmentCandidateInput[]) {
+  return rankEnrichmentCandidates(candidates).filter(isWebsiteEnrichmentCandidate);
 }

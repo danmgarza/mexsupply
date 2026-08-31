@@ -94,10 +94,10 @@ Analyze repeated identity/contact patterns without merging records:
 npm run analyze:duplicates
 ```
 
-Plan the first public-web enrichment queue from qualified candidates:
+Plan the first website-enrichment queue from qualified, industrial candidates with websites:
 
 ```bash
-npm run plan:enrichment
+npm run plan:website-enrichment
 ```
 
 Manufacturing candidates are initially identified by DENUE economic sector codes `31`, `32`, and `33`, plus class codes beginning with those prefixes.
@@ -105,7 +105,7 @@ Live DENUE ingestion requires `DENUE_API_TOKEN`. Request URLs stored in raw reco
 
 ## Enrichment
 
-Web enrichment is intentionally deferred until the DENUE raw ingestion pipeline is proven reliable. Future enrichment must store evidence in `company_evidence` and attach provenance and confidence to derived claims.
+Website enrichment starts with qualified, industrial candidates that already have a website. Phone/email-only rows remain useful for search and later contact research, but they stay out of the first website-enrichment queue. Enriched claims must be stored in `company_evidence` and attach provenance and confidence to derived facts.
 
 ## Candidate Qualification
 

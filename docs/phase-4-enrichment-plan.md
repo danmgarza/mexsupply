@@ -7,14 +7,17 @@ Phase 4 should begin with public-web enrichment, but only after candidate select
 Run the first enrichment queue planner with:
 
 ```bash
-npm.cmd run plan:enrichment
+npm.cmd run plan:website-enrichment
 ```
 
 Current local results:
 
 - Total qualified supplier candidates: 410
-- Industrial enrichment pool: 231
+- Website-qualified supplier candidates: 186
+- Industrial website-enrichment pool: 113
 - First queue returned by script: 50
+
+The active Phase 4 website-enrichment queue is stricter and requires a website.
 
 ## Candidate Rules
 
@@ -23,7 +26,11 @@ Qualified candidates must:
 - not be `0 a 5 personas`
 - have at least one contact channel: website, normalized phone, or email
 
-The first Phase 4 enrichment pool further prioritizes industrial/procurement-relevant manufacturing classes:
+Website-enrichment candidates must also:
+
+- have a website
+
+The first Phase 4 website-enrichment pool further prioritizes industrial/procurement-relevant manufacturing classes:
 
 - chemicals and materials
 - plastics and rubber
@@ -33,7 +40,7 @@ The first Phase 4 enrichment pool further prioritizes industrial/procurement-rel
 - transportation, automotive, and aerospace
 - furniture and related manufactured goods
 
-This intentionally keeps consumer food chains, water franchises, and micro/local storefront patterns out of the first enrichment pass even when they are technically manufacturing-coded in DENUE.
+This intentionally keeps consumer food chains, water franchises, micro/local storefront patterns, and phone/email-only records out of the first enrichment pass even when they are technically manufacturing-coded in DENUE. Contactable companies without websites can become a later contact-research lane.
 
 ## Enrichment Principles
 
@@ -52,7 +59,7 @@ Do not present an enrichment inference as an official company fact. Use confiden
 
 ## First Enrichment Targets
 
-The current top queue favors larger, contactable industrial manufacturers with websites and procurement-relevant activity codes. Examples from the current local planner include:
+The current top queue favors larger industrial manufacturers with websites and procurement-relevant activity codes. Examples from the current local planner include:
 
 - A Schulman de Mexico
 - ABB Mexico

@@ -1,5 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { rankEnrichmentCandidates, scoreEnrichmentCandidate, type EnrichmentCandidateInput } from "@/lib/analysis/enrichment-priority";
+import {
+  isWebsiteEnrichmentCandidate,
+  rankEnrichmentCandidates,
+  rankWebsiteEnrichmentCandidates,
+  scoreEnrichmentCandidate,
+  type EnrichmentCandidateInput
+} from "@/lib/analysis/enrichment-priority";
 
 const baseCandidate: EnrichmentCandidateInput = {
   id: "1",
@@ -53,5 +59,18 @@ describe("enrichment priority", () => {
     ]);
 
     expect(ranked[0].id).toBe("1");
+  });
+
+  it("requires a website for the website enrichment lane", () => {
+    const contactOnly = {
+      ...baseCandidate,
+      id: "contact-only",
+      website: null,
+      email: "sales@example.com"
+    };
+
+    expect(scoreEnrichmentCandidate(contactOnly).score).toBeGreaterThan(0);
+    expect(isWebsiteEnrichmentCandidate(contactOnly)).toBe(false);
+    expect(rankWebsiteEnrichmentCandidates([contactOnly, baseCandidate]).map((candidate) => candidate.id)).toEqual(["1"]);
   });
 });
