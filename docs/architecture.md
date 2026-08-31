@@ -18,6 +18,7 @@ The V1 data flow is:
 - `app/companies/[id]/page.tsx`: company profile with source links.
 - `app/admin/page.tsx`: internal data exploration dashboard.
 - `app/admin/data/page.tsx`: internal sample-data inspection and data-quality view.
+- `app/admin/enrichment/page.tsx`: internal review table for evidence-backed enrichment claims.
 - `lib/db`: direct Postgres query helpers for server-side rendering and jobs.
 
 ## Jobs
@@ -27,6 +28,7 @@ The V1 data flow is:
 - `scripts/analyze-database-quality.ts`: database-backed quality report over loaded canonical/source rows.
 - `scripts/analyze-duplicate-clusters.ts`: duplicate-pattern review without merging records.
 - `scripts/plan-enrichment-candidates.ts`: Phase 4 website-enrichment queue planner for qualified industrial candidates with websites.
+- `scripts/enrich-website-pilot.ts`: dry-run-first website enrichment pilot with explicit `--write` persistence.
 - `scripts/run-migrations.ts`: direct Postgres migration fallback when Supabase CLI is not available.
 
 Each ingestion creates an `ingestion_runs` row and records discovered, inserted, updated, skipped, and failed counts.

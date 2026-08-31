@@ -81,6 +81,20 @@ Before crawling at scale, enrich a tiny pilot batch of 5-10 company websites and
 - timeout/retry behavior
 - whether contact fields from DENUE are stale or inconsistent
 
+Run the pilot in three steps:
+
+```bash
+npm.cmd run enrich:website-pilot -- --limit 5 --select-only
+npm.cmd run enrich:website-pilot -- --limit 5
+npm.cmd run enrich:website-pilot -- --limit 5 --write
+```
+
+The pilot is deterministic and keyword-based. It starts with bilingual English/Spanish patterns for capabilities, materials, industries served, and certifications. It does not use LLM extraction, and the default mode does not write to the database.
+
+Written pilot evidence is reviewable at `/admin/enrichment`.
+
+The first one-company write pilot is summarized in `docs/phase-4-pilot-report.md`.
+
 ## Stop Conditions
 
 Stop before scaled enrichment if:

@@ -17,6 +17,22 @@ export type CompanySearchRow = {
   is_manufacturing_candidate?: boolean;
 };
 
+export type EnrichmentEvidenceRow = {
+  id: string;
+  company_id: string;
+  company_name: string;
+  state: string | null;
+  city: string | null;
+  claim_type: string;
+  claim_value: string;
+  source: string;
+  source_url: string | null;
+  evidence_text: string | null;
+  confidence: string | null;
+  captured_at: string;
+  extraction_method: string;
+};
+
 export async function searchCompanies({
   q,
   state,
@@ -388,5 +404,33 @@ export async function getDuplicateClusterReport() {
     return { summary, clusters: assessed };
   } catch {
     return { summary: {}, clusters: [] };
+  }
+}
+
+export async function getRecentEnrichmentEvidence(limit = 100): Promise<EnrichmentEvidenceRow[]> {
+  try {
+    const result = await query<EnrichmentEvidenceRow>(
+      `select evidence.id,
+              evidence.company_id,
+              coalesce(companies.trade_name, companies.legal_name, companies.normalized_name, companies.id::text) as company_name,
+              companies.state,
+              companies.city,
+              evidence.claim_type,
+              evidence.claim_value,
+              evidence.source,
+              evidence.source_url,
+              evidence.evidence_text,
+              evidence.confidence::text,
+              evidence.captured_at::text,
+              evidence.extraction_method
+       from company_evidence evidence
+       join companies on companies.id = evidence.company_id
+       order by evidence.captured_at desc
+       limit $1`,
+      [limit]
+    );
+    return result.rows;
+  } catch {
+    return [];
   }
 }

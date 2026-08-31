@@ -100,6 +100,13 @@ Plan the first website-enrichment queue from qualified, industrial candidates wi
 npm run plan:website-enrichment
 ```
 
+Preview or dry-run the first website enrichment pilot:
+
+```bash
+npm run enrich:website-pilot -- --limit 5 --select-only
+npm run enrich:website-pilot -- --limit 5
+```
+
 Manufacturing candidates are initially identified by DENUE economic sector codes `31`, `32`, and `33`, plus class codes beginning with those prefixes.
 Live DENUE ingestion requires `DENUE_API_TOKEN`. Request URLs stored in raw records redact the token.
 

@@ -18,6 +18,7 @@
     "analyze:duplicates": "tsx scripts/analyze-duplicate-clusters.ts",
     "plan:website-enrichment": "tsx scripts/plan-enrichment-candidates.ts",
     "plan:enrichment": "tsx scripts/plan-enrichment-candidates.ts",
+    "enrich:website-pilot": "tsx scripts/enrich-website-pilot.ts",
     "supabase": "supabase"
   },
   "dependencies": {
