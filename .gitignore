@@ -1,0 +1,14 @@
+.env
+.env.*
+!.env.example
+.next/
+node_modules/
+coverage/
+dist/
+*.log
+tsconfig.tsbuildinfo
+data/raw/
+data/exports/
+data/*.zip
+supabase/.branches/
+supabase/.temp/
